@@ -4,6 +4,9 @@ from typing import Iterable, Union
 
 class Calibration:
 
+    def __init__(self):
+        pass
+
     @staticmethod
     def get_lines(filename: str) -> str:
         file = open(filename, 'r')
