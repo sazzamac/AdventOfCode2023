@@ -1,4 +1,5 @@
 import sys
+from typing import Iterable, Union
 
 
 class Calibration:
@@ -10,25 +11,23 @@ class Calibration:
         return lines
 
     @classmethod
-    def get_calibration_value(cls, line: str) -> int:
+    def get_first_int_char(cls, line: Iterable) -> Union[str, None]:
         for char in line:
             try:
                 int(char)
-                first_digit = char
-                break
+                return char
             except ValueError:
                 pass
-        for char in line[::-1]:
-            try:
-                int(char)
-                last_digit = char
-                break
-            except ValueError:
-                pass
+        return None
+
+    @classmethod
+    def get_calibration_value(cls, line: Iterable) -> int:
+        first_digit = cls.get_first_int_char(line)
+        last_digit = cls.get_first_int_char(line[::-1])
         calibration_str = first_digit + last_digit
         calibration_value = int(calibration_str)
         if not isinstance(calibration_value, int):
-            raise CalibrationError
+            raise TypeError
         return calibration_value
 
     @classmethod
