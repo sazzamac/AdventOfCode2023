@@ -7,7 +7,7 @@ class Calibration:
     def __init__(self):
         pass
 
-    @staticmethod
+    @staticmethod  # TODO: Move into a helper module
     def get_lines(filename: str) -> str:
         file = open(filename, 'r')
         lines = [line.replace('\n', '') for line in file]
