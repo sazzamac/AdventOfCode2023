@@ -1,14 +1,24 @@
 import re
 import sys
+from enum import Enum
 
 
-valid_game = dict(red=12, green=13, blue=14)
+class Colour(Enum):
+    RED = 'red'
+    GREEN = 'green'
+    BLUE = 'blue'
 
 
-def get_lines(filename: str) -> str:
-        file = open(filename, 'r')
-        lines = [line.replace('\n', '') for line in file]
-        return lines
+valid_game = {Colour.RED.value: 12, Colour.GREEN.value: 13, Colour.BLUE.value: 14}
+
+
+class Game:
+
+    @
+    def get_games(self, filename: str) -> str:
+    file = open(filename, 'r')
+    games = [line.replace('\n', '') for line in file]
+    return games
 
 
 def get_game_id(game_record: str) -> int:
@@ -46,7 +56,7 @@ def is_game_valid(game_record: str) -> bool:
 
 
 def get_sum_of_valid_game_ids(filename: str) -> int:
-    games = get_lines(filename)
+    games = get_games(filename)
     sum_of_valid_game_ids = 0
     for game_record in games:
         if is_game_valid(game_record):
@@ -55,7 +65,30 @@ def get_sum_of_valid_game_ids(filename: str) -> int:
     return sum_of_valid_game_ids
 
 
+def get_min_cubes_to_make_game_possible(game_record: str) -> dict:
+    min_num_cubes = {colour.value: 0 for colour in Colour}
+    for game_set in get_game_sets(game_record):
+        for drawn_colour, colour_count in game_set.items():
+            assert drawn_colour in [colour.value for colour in Colour], f'{drawn_colour} colour not valid!'
+            if min_num_cubes[drawn_colour] < colour_count:
+                min_num_cubes[drawn_colour] = colour_count
+    return min_num_cubes
+
+
+def get_power_of_cube_set(game_set: dict):
+    power = 1
+    for colour_count in game_set.values():
+        power = colour_count * power
+    return power
+
+
 if __name__ == '__main__':
     game_input = sys.argv[1]
     sum_of_valid_game_ids = get_sum_of_valid_game_ids(game_input)
     print(sum_of_valid_game_ids)
+
+    sum_of_powers = 0
+    for game_record in get_games(game_input):
+        min_cubes_set = get_min_cubes_to_make_game_possible(game_record)
+        sum_of_powers += get_power_of_cube_set(min_cubes_set)
+    print(sum_of_powers)
